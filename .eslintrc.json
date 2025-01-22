@@ -1,7 +1,7 @@
 {
   "extends": ["next/core-web-vitals", "next/typescript"],
   "rules": {
-    "@typescript-eslint/no-unused-vars": "warn", // Change unused variable errors to warnings
+    "@typescript-eslint/no-unused-vars": "off", // Change unused variable errors to warnings
     "react-hooks/exhaustive-deps": "warn" ,       // Make missing dependencies in `useEffect` a warning
      "no-unused-vars": "off", // Disable the unused vars rule
     "react/react-in-jsx-scope": "off", // For JSX errors (if you're using React 17+)

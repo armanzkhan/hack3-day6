@@ -8,7 +8,7 @@ const nextConfig: NextConfig = {
 };
 module.exports = {
   reactStrictMode: false, // Disables React Strict Mode to stop warnings in development
-  swcMinify: true, // Enable SWC minification for production
+  // swcMinify: true, // Enable SWC minification for production
 };
 
 
