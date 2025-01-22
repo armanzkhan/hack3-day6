@@ -6,6 +6,11 @@ const nextConfig: NextConfig = {
   },
   /* other config options here */
 };
+module.exports = {
+  reactStrictMode: false, // Disables React Strict Mode to stop warnings in development
+  swcMinify: true, // Enable SWC minification for production
+};
+
 
 export default nextConfig;
 
