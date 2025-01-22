@@ -35,17 +35,33 @@ const getProduct = async (id: string): Promise<Product | null> => {
   return product;
 };
 
-// Adjusting the Props type to match Next.js requirements
+import { NextPage } from "next";
+
+// Define the PageProps type that reflects the dynamic route's params
 interface PageProps {
   params: {
     id: string;
   };
 }
 
-const Page = async ({ params }: PageProps) => {
-  const product = await getProduct(params.id);
+const Page: NextPage<PageProps> = ({ params }) => {
+  // Fetch the product in the component using the params
+  const [product, setProduct] = React.useState<Product | null>(null);
 
-  // Handle case where product is not found
+  React.useEffect(() => {
+    const fetchProduct = async () => {
+      const fetchedProduct = await getProduct(params.id);
+      setProduct(fetchedProduct);
+    };
+
+    fetchProduct();
+  }, [params.id]);
+
+  // Handle loading or when product is not found
+  if (!product) {
+    return <p>Loading...</p>;
+  }
+
   if (!product) {
     return <p>Product not found</p>;
   }
