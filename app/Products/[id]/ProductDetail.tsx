@@ -1,31 +1,21 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import CaretRight from "../../../public/CaretRight.png";
 import Image from "next/image";
 import { useDispatch } from "react-redux";
 import { useAppSelector, AppDispatch } from "@/redux/features/store";
 import { updateCart } from "@/redux/features/cart-slice";
+import { Product } from "@/app/types/Types";
 
-interface Product {
-  _id: string;
-  name: string;
-  category: string;
-  price: number;
-  originalPrice: number;
-  tags: string;
-  image: string;
-  description: string;
-  available: boolean;
-}
-
+// Assuming the Product type has tags as string[]
 interface CartItem {
   _id: string;
   name: string;
   category: string;
   price: number;
   originalPrice: number;
-  tags: string;
+  tags: string[];  // tags as an array of strings
   image: string;
   description: string;
   available: boolean;
@@ -70,11 +60,19 @@ const ProductDetail = ({ product }: Props) => {
 
     if (itemIndex === -1) {
       const newCartItem: CartItem = {
-        ...product,
+        _id: product._id,
+        name: product.name,
+        category: product.category,
+        price: product.price,
+        originalPrice: product.originalPrice,
+        tags: product.tags,  // Directly use the tags as an array
+        image: product.image,
+        description: product.description,
+        available: product.available,
         quantity: quantity,
       };
       const updatedCart = [...cartArray, newCartItem];
-      dispatch(updateCart(updatedCart));
+      // dispatch(updateCart(updatedCart));
     } else {
       updateCartQuantity(quantity);
     }
@@ -111,7 +109,6 @@ const ProductDetail = ({ product }: Props) => {
 
             <button onClick={addToCart} className="flex justify-center items-center bg-primary h-10 px-6 gap-3 hover:bg-amber-400 text-white"> Add to Cart </button>
           </div>
-
         </div>
       </div>
     </div>
