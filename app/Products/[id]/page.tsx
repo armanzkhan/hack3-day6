@@ -20,31 +20,27 @@ interface Products {
 const getProduct = async (id: string): Promise<Product | null> => {
   const product = await client.fetch(
     `*[_type == "food" && _id == $id][0]{
-        _id,
-        name,
-        category,
-        price,
-        originalPrice,
-        tags,
-        "image": image.asset->url,
-        description,
-        available
-      }`,
+      _id,
+      name,
+      category,
+      price,
+      originalPrice,
+      tags,
+      "image": image.asset->url,
+      description,
+      available
+    }`,
     { id }
   );
   return product;
 };
 
 interface Props {
-  params: {
-    id: string;
-  };
+  product: Product;  // The product will be passed to the page as a prop
 }
 
-// Adjusted Page component
-const Page = async ({ params }: Props) => {
-  const product = await getProduct(params.id);
-
+// Page component that will display the product details
+const Page = ({ product }: Props) => {
   // Handle case where product is not found
   if (!product) {
     return <p>Product not found</p>;
@@ -55,3 +51,25 @@ const Page = async ({ params }: Props) => {
 };
 
 export default Page;
+
+// getServerSideProps to fetch product data on the server side
+export const getServerSideProps = async (context: { params: { id: string } }) => {
+  const { id } = context.params;
+  
+  // Fetch the product using the ID from the URL params
+  const product = await getProduct(id);
+
+  // If no product found, return a 404 page
+  if (!product) {
+    return {
+      notFound: true,  // Will show a 404 page if the product is not found
+    };
+  }
+
+  // If product is found, return it as a prop to the page
+  return {
+    props: {
+      product,  // Pass the product data to the page as a prop
+    },
+  };
+};
