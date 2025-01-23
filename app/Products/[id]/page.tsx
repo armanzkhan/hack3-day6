@@ -1,22 +1,18 @@
-import React from "react";
+// Add the "use client" directive to mark this as a client-side component
+"use client";
+
+import React, { useEffect, useState } from "react";
 import ProductDetail from "./ProductDetail";
 import { client } from "@/sanity/lib/client";
 import { Product } from "@/app/types/Types";
+import { useRouter } from "next/router";
 
-// Define the shape of the product that will be fetched
-interface Products {
-  _id: string;
-  name: string;
-  category: string;
-  price: number;
-  originalPrice: number;
-  tags: string[];
-  image: string;
-  description: string;
-  available: boolean;
+// Manually type the PageProps for the dynamic route
+interface PageProps {
+  params: Promise<{ id: string }>
 }
 
-// Fetch product by ID
+// Function to fetch the product based on ID
 const getProduct = async (id: string): Promise<Product | null> => {
   const product = await client.fetch(
     `*[_type == "food" && _id == $id][0]{
@@ -35,20 +31,13 @@ const getProduct = async (id: string): Promise<Product | null> => {
   return product;
 };
 
-import { NextPage } from "next";
+// Page component for displaying a product's details
+const Page = ({params}) => {
 
-// Define the PageProps type that reflects the dynamic route's params
-interface PageProps {
-  params: {
-    id: string;
-  };
-}
+  const [product, setProduct] = useState<Product | null>(null);
 
-const Page: NextPage<PageProps> = ({ params }) => {
-  // Fetch the product in the component using the params
-  const [product, setProduct] = React.useState<Product | null>(null);
-
-  React.useEffect(() => {
+  useEffect(() => {
+    
     const fetchProduct = async () => {
       const fetchedProduct = await getProduct(params.id);
       setProduct(fetchedProduct);
@@ -57,16 +46,11 @@ const Page: NextPage<PageProps> = ({ params }) => {
     fetchProduct();
   }, [params.id]);
 
-  // Handle loading or when product is not found
+  // Render loading state or product details
   if (!product) {
     return <p>Loading...</p>;
   }
 
-  if (!product) {
-    return <p>Product not found</p>;
-  }
-
-  // Pass the fetched product to ProductDetail
   return <ProductDetail product={product} />;
 };
 
